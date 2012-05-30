@@ -1,0 +1,41 @@
+
+
+
+
+Marshalling format
+==================
+
+The Type/Size/Value bytes
+-------------------------
+
+0VVVVVVV                   7 bit signed integer value. (-16 values at negative end)
+01000101  2 x VVVVVVVV     Big-Endian  16-bit signed integer value      -59  -x45
+01000000  4 x VVVVVVVV     Big-Endian  32-bit signed integer value      -60  0x44
+01000011  8 x VVVVVVVV     Big-Endian  64-bit signed integer value      -61  0x43
+01000010  4 x VVVVVVVV     Big-Endian  32 Bit float                     -62  0x42
+01000001  8 x VVVVVVVV     Big-Endian  64 Bit float                     -63  0x41
+01000000                   NULL                                         -64  0x40
+
+100SSSSS                   UTF-8 string with  5 bit length (-3 size at end)
+10011101 1 x SSSSSSSS      UTF-8 string with  8 bit length
+10011110 2 x SSSSSSSS      UTF-8 string with 16 bit length
+10011111 4 x SSSSSSSS      UTF-8 string with 32 bit length
+
+101SSSSS                   Binary string with  5 bit length (-3 size at end)
+10111101 1 x SSSSSSSS      Binary string with  8 bit length
+10111110 2 x SSSSSSSS      Binary string with 16 bit length
+10111111 4 x SSSSSSSS      Binary string with 32 bit length
+
+110LLLLL                   List with  5 bit nr of items (-3 values at end)
+11011101 1 x LLLLLLLL      List with  8 bit nr of items
+11011110 2 x LLLLLLLL      List with 16 bit nr of items
+11011111 4 x LLLLLLLL      List with 32 bit nr of items
+
+111LLLLL                   Dictionary with  5 bit nr of key-value pairs (-3 values at end)
+11111101 1 x LLLLLLLL      Dictionary with  8 bit nr of key-value pairs
+11111110 2 x LLLLLLLL      Dictionary with 16 bit nr of key-value pairs
+11111111 4 x LLLLLLLL      Dictionary with 32 bit nr of key-value pairs
+
+
+
+

@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Take Vos's pickle
+Description: Serializes and deserializes common data types.
+Requires: tvutils
+Version: @VERSION@
+Libs: -L${libdir} -ltvpickle -lm
+Cflags: -I${includedir}/tvpickle-@VERSION@
+
