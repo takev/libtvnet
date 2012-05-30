@@ -12,7 +12,7 @@ libtvpickle_la_SOURCES = tvpickle.c
 libtvpickle_la_LIBADD = $(DEPS_LIBS) -lm
 
 library_includedir=$(includedir)/tvpickle-$(VERSION)/tvpickle
-library_include_HEADERS = tvpickle.h encoder.h length.h #decoder.h
+library_include_HEADERS = tvpickle.h encoder.h length.h decoder.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = tvpickle.pc
