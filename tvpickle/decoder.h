@@ -95,7 +95,7 @@ static inline tvp_token_t tvp_dec_number(tvu_buffer_t *buffer, uint8_t c)
         break;
     default: // integer is encoded in the control word
         token.type = TVP_TOKEN_INTEGER;
-        token.value.i = tvu_sign_extend(c, 7);
+        token.value.i = tvu_sign_extend_u8(c, 7);
         break;
     }
     return token;

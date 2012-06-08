@@ -20,6 +20,7 @@
 #include <tvpickle/length.h>
 #include <tvpickle/encoder.h>
 #include <tvpickle/decoder.h>
+#include <tvpickle/stdarg_encoder.h>
 
 int tvp_init(void);
 

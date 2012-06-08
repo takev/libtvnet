@@ -21,7 +21,7 @@
 #include <math.h>
 #include <tvutils/tvutils.h>
 
-static inline int tvp_len_integer(int64_t x)
+static inline size_t tvp_len_integer(int64_t x)
 {
     if (x  > INT32_MAX) {
         return 9;
@@ -40,7 +40,7 @@ static inline int tvp_len_integer(int64_t x)
     }
 }
 
-static inline int tvp_len_float(double x)
+static inline size_t tvp_len_float(double x)
 {
     float y = x;
 
@@ -58,12 +58,12 @@ static inline int tvp_len_float(double x)
     }
 }
 
-static inline int tvp_len_null()
+static inline size_t tvp_len_null()
 {
     return 1;
 }
 
-static inline int tvp_len_compound(uint32_t x)
+static inline size_t tvp_len_compound(size_t x)
 {
     if (x > UINT16_MAX) {
         return 5;
@@ -76,27 +76,27 @@ static inline int tvp_len_compound(uint32_t x)
     }
 }
 
-static inline int tvp_len_string(uint32_t buffer_size)
+static inline size_t tvp_len_string(size_t buffer_size)
 {
     return tvp_len_compound(buffer_size) + buffer_size;
 }
 
-static inline int tvp_len_utf8_string(uint32_t buffer_size)
+static inline size_t tvp_len_utf8_string(size_t buffer_size)
 {
     return tvp_len_string(buffer_size);
 }
 
-static inline int tvp_len_binary_string(uint32_t buffer_size)
+static inline size_t tvp_len_binary_string(size_t buffer_size)
 {
     return tvp_len_string(buffer_size);
 }
 
-static inline int tvp_len_list(uint32_t size)
+static inline size_t tvp_len_list(size_t size)
 {
     return tvp_len_compound(size);
 }
 
-static inline int tvp_len_dictionary(uint32_t size)
+static inline size_t tvp_len_dictionary(size_t size)
 {
     return tvp_len_compound(size);
 }

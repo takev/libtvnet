@@ -247,25 +247,15 @@ static Py_ssize_t pytvp_length_tuple(PyObject *args)
     return length;
 }
 
-static Py_ssize_t pytvp_encode_tuple(tvu_buffer_t *buffer, PyObject *args)
+static void pytvp_encode_tuple(tvu_buffer_t *buffer, PyObject *args)
 {
-    Py_ssize_t length = 0;
     Py_ssize_t nr_objects;
     Py_ssize_t object_nr;
-    Py_ssize_t object_length;
-
-    if (!PySequence_Check(args)) {
-        PyErr_SetString(pytvp_error, "Expecting a sequence as argument");
-        return -1;
-    }
 
     nr_objects = PySequence_Length(args);
     for (object_nr = 0; object_nr < nr_objects; object_nr++) {
         pytvp_encode_recurse(buffer, PySequence_Fast_GET_ITEM(args, object_nr));
-        length+= object_length;
     }
-
-    return length;
 }
 
 static PyObject *pytvp_decode_tuple(tvu_buffer_t *buffer)
@@ -287,7 +277,7 @@ static PyObject *pytvp_decode_tuple(tvu_buffer_t *buffer)
     return list;
 }
 
-static PyObject *pytvp_encode(PyObject *self, PyObject *args)
+static PyObject *pytvp_encode(PyObject *self __attribute__((unused)), PyObject *args)
 {
     Py_ssize_t      length;
     PyObject        *byte_array;
@@ -304,14 +294,11 @@ static PyObject *pytvp_encode(PyObject *self, PyObject *args)
     buffer.data = (uint8_t *)PyString_AS_STRING(byte_array);
     buffer.offset = 0;
 
-    if ((pytvp_encode_tuple(&buffer, args)) == -1) {
-        return NULL;
-    }
-
+    pytvp_encode_tuple(&buffer, args);
     return byte_array;
 }
 
-static PyObject *pytvp_decode(PyObject *self, PyObject *args)
+static PyObject *pytvp_decode(PyObject *self __attribute__((unused)), PyObject *args)
 {
     PyObject        *list;
     PyObject        *tuple;
@@ -333,7 +320,7 @@ static PyObject *pytvp_decode(PyObject *self, PyObject *args)
 
     if (PySequence_Size(list) == 1) {
         // Convert the list to a single item.
-        object = PySequence_GetItem(tuple, 0);
+        object = PySequence_GetItem(list, 0);
         Py_DECREF(list);
         return object;
 
