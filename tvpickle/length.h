@@ -83,7 +83,8 @@ static inline size_t tvp_len_string(size_t buffer_size)
 
 static inline size_t tvp_len_utf8_string(size_t buffer_size)
 {
-    return tvp_len_string(buffer_size);
+    // an UTF-8 string has a nul terminator outside of the tag/length field.
+    return tvp_len_string(buffer_size) + 1;
 }
 
 static inline size_t tvp_len_binary_string(size_t buffer_size)

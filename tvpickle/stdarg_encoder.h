@@ -41,25 +41,25 @@
  * @param fmt   Format string of the arguments.
  * @param ...   The fields to encode.
  */
-ssize_t tvp_length(char const * restrict fmt, ...);
+ssize_t tvp_length(utf8_t const * restrict fmt, ...);
 
 /**
  * @param fmt   Format string of the arguments.
  * @param ...   The fields to encode.
  */
-int tvp_encode(tvu_buffer_t * restrict buffer, char const * restrict fmt, ...);
+int tvp_encode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...);
 
 /** Calculate the length for a buffer
  * @param fmt   Format string of the arguments.
  * @param ap    The fields to encode.
  */
-ssize_t tvp_vlength(char const * restrict fmt, va_list ap);
+ssize_t tvp_vlength(utf8_t const * restrict fmt, va_list ap);
 
 /**
  * @param fmt   Format string of the arguments.
  * @param ap    The fields to encode.
  */
-int tvp_vencode(tvu_buffer_t * restrict buffer, char const * restrict fmt, va_list ap);
+int tvp_vencode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap);
 
 
 #endif

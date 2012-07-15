@@ -142,12 +142,14 @@ static inline tvp_token_t tvp_dec_token(tvu_buffer_t *buffer)
         token = tvp_dec_container(buffer, c, TVP_TOKEN_UTF8_STRING);
         TVP_DEC_BOUND_CHECK(token, buffer, token.value.u, TVP_TOKEN_ERROR);
         token.data = &buffer->data[buffer->offset];
-        buffer->offset+= token.value.u;
+        // Skip over the string + NUL.
+        buffer->offset+= token.value.u + 1;
         break;
     case 5:
         token = tvp_dec_container(buffer, c, TVP_TOKEN_BIN_STRING);
         TVP_DEC_BOUND_CHECK(token, buffer, token.value.u, TVP_TOKEN_ERROR);
         token.data = &buffer->data[buffer->offset];
+        // Skip over the binary data.
         buffer->offset+= token.value.u;
         break;
     case 6:

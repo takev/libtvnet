@@ -19,7 +19,7 @@
 #include <tvpickle/encoder.h>
 #include <tvpickle/stdarg_encoder.h>
 
-ssize_t tvp_length(char const * restrict fmt, ...)
+ssize_t tvp_length(utf8_t const * restrict fmt, ...)
 {
     va_list ap;
     ssize_t size;
@@ -31,7 +31,7 @@ ssize_t tvp_length(char const * restrict fmt, ...)
     return size;
 }
 
-int tvp_encoder(tvu_buffer_t * restrict buffer, char const * restrict fmt, ...)
+int tvp_encoder(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
 {
     va_list ap;
     int     ret;
@@ -43,11 +43,11 @@ int tvp_encoder(tvu_buffer_t * restrict buffer, char const * restrict fmt, ...)
     return ret;
 }
 
-ssize_t tvp_vlength(char const * restrict fmt, va_list ap)
+ssize_t tvp_vlength(utf8_t const * restrict fmt, va_list ap)
 {
-    char    c;
-    uint8_t *s;
-    ssize_t size = 0;
+    utf8_t   c;
+    utf8_t   *s;
+    ssize_t  size = 0;
 
     while ((c = *fmt++) != '\0') {
         switch (c) {
@@ -61,9 +61,10 @@ ssize_t tvp_vlength(char const * restrict fmt, va_list ap)
         case 'Q': size += tvp_len_integer(va_arg(ap, uint64_t)); break;
         case 'f': size += tvp_len_float(va_arg(ap, float64_t)); break;      // float promoted to double
         case 'F': size += tvp_len_float(va_arg(ap, float64_t)); break;
+        case 'G': size += tvp_len_float(va_arg(ap, float80_t)); break;
         case 's':
-            s = va_arg(ap, uint8_t *);
-            size+= tvp_len_utf8_string(strlen((char *)s));
+            s = va_arg(ap, utf8_t *);
+            size+= tvp_len_utf8_string(tvu_strlen(s));
             break;
         default:
             errno = EINVAL;
@@ -73,10 +74,10 @@ ssize_t tvp_vlength(char const * restrict fmt, va_list ap)
     return size;
 }
 
-int tvp_vencode(tvu_buffer_t * restrict buffer, char const * restrict fmt, va_list ap)
+int tvp_vencode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap)
 {
-    char    c;
-    uint8_t *s;
+    utf8_t    c;
+    utf8_t    *s;
 
     while ((c = *fmt++) != '\0') {
         switch (c) {
@@ -91,8 +92,8 @@ int tvp_vencode(tvu_buffer_t * restrict buffer, char const * restrict fmt, va_li
         case 'f': tvp_enc_float(buffer, va_arg(ap, float64_t)); break;
         case 'F': tvp_enc_float(buffer, va_arg(ap, float64_t)); break;
         case 's':
-            s = va_arg(ap, uint8_t *);
-            tvp_enc_utf8_string(buffer, s, strlen((char *)s));
+            s = va_arg(ap, utf8_t *);
+            tvp_enc_utf8_string(buffer, s);
             break;
         default:
             errno = EINVAL;

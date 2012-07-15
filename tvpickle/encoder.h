@@ -98,9 +98,16 @@ static inline void tvp_enc_string(tvu_buffer_t * restrict buffer, uint8_t c, uin
     buffer->offset+= string_size;
 }
 
-static inline void tvp_enc_utf8_string(tvu_buffer_t * restrict buffer, uint8_t const * restrict string, uint32_t string_size)
+static inline void tvp_enc_utf8_string_and_size(tvu_buffer_t * restrict buffer, utf8_t const * restrict string, uint32_t string_size)
 {
     tvp_enc_string(buffer, 0x80, string, string_size);
+    // Terminate the UTF-8 string with a NUL.
+    buffer->data[buffer->offset++] = 0;
+}
+
+static inline void tvp_enc_utf8_string(tvu_buffer_t * restrict buffer, utf8_t const * restrict string)
+{
+    tvp_enc_utf8_string_and_size(buffer, string, tvu_strlen(string));
 }
 
 static inline void tvp_enc_binary_string(tvu_buffer_t * restrict buffer, uint8_t const * restrict string, uint32_t string_size)

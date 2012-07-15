@@ -1,0 +1,7 @@
+
+2012-06-15  Take Vos  <take.vos@vosgames.nl>
+
+    * Incompatible change in serialization format; adding a nul termination character
+    after an UTF-8 string, which is not counted in the length/tag.
+    This is an important change to need less copying, since function that requires a nul
+    terminator can access the string straight from the serialized data.

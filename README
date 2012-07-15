@@ -16,10 +16,10 @@ The Type/Size/Value bytes
 01000001  8 x VVVVVVVV     Big-Endian  64 Bit float                     -63  0x41
 01000000                   NULL                                         -64  0x40
 
-100SSSSS                   UTF-8 string with  5 bit length (-3 size at end)
-10011101 1 x SSSSSSSS      UTF-8 string with  8 bit length
-10011110 2 x SSSSSSSS      UTF-8 string with 16 bit length
-10011111 4 x SSSSSSSS      UTF-8 string with 32 bit length
+100SSSSS                   UTF-8 string with  5 bit length (-3 size at end) (excluding the nul)
+10011101 1 x SSSSSSSS      UTF-8 string with  8 bit length (excluding the nul)
+10011110 2 x SSSSSSSS      UTF-8 string with 16 bit length (excluding the nul)
+10011111 4 x SSSSSSSS      UTF-8 string with 32 bit length (excluding the nul)
 
 101SSSSS                   Binary string with  5 bit length (-3 size at end)
 10111101 1 x SSSSSSSS      Binary string with  8 bit length
