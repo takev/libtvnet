@@ -12,6 +12,7 @@ configure
 aclocal.m4
 buildutils
 autom4te.cache
+*.tar.gz
 */.deps/
 */.libs/
 */config.h.in
