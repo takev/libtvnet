@@ -90,7 +90,7 @@ static inline void tvp_enc_compound(tvu_buffer_t * restrict buffer, uint8_t c, u
     }
 }
 
-static inline void tvp_enc_string(tvu_buffer_t * restrict buffer, uint8_t c, uint8_t const * restrict string, uint32_t string_size)
+static inline void tvp_enc_string(tvu_buffer_t * restrict buffer, uint8_t c, void const * restrict string, uint32_t string_size)
 {
     tvp_enc_compound(buffer, c, string_size);
 
@@ -107,10 +107,10 @@ static inline void tvp_enc_utf8_string_and_size(tvu_buffer_t * restrict buffer, 
 
 static inline void tvp_enc_utf8_string(tvu_buffer_t * restrict buffer, utf8_t const * restrict string)
 {
-    tvp_enc_utf8_string_and_size(buffer, string, tvu_strlen(string));
+    tvp_enc_utf8_string_and_size(buffer, string, strlen(string));
 }
 
-static inline void tvp_enc_binary_string(tvu_buffer_t * restrict buffer, uint8_t const * restrict string, uint32_t string_size)
+static inline void tvp_enc_binary_string(tvu_buffer_t * restrict buffer, void const * restrict string, uint32_t string_size)
 {
     tvp_enc_string(buffer, 0xa0, string, string_size);
 }

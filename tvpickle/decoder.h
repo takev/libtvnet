@@ -42,7 +42,7 @@ typedef union {
 typedef struct {
     tvp_type_t  type;
     tvp_value_t value;
-    uint8_t     *data;
+    void        *data;
 } tvp_token_t;
 
 

@@ -31,7 +31,7 @@ ssize_t tvp_length(utf8_t const * restrict fmt, ...)
     return size;
 }
 
-int tvp_encoder(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
+int tvp_encode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
 {
     va_list ap;
     int     ret;
@@ -64,7 +64,7 @@ ssize_t tvp_vlength(utf8_t const * restrict fmt, va_list ap)
         case 'G': size += tvp_len_float(va_arg(ap, float80_t)); break;
         case 's':
             s = va_arg(ap, utf8_t *);
-            size+= tvp_len_utf8_string(tvu_strlen(s));
+            size+= tvp_len_utf8_string(strlen(s));
             break;
         default:
             errno = EINVAL;

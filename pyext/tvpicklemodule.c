@@ -114,7 +114,7 @@ static void pytvp_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
 
     } else if (PyUnicode_Check(o)) {
         utf8_string = PyUnicode_AsUTF8String(o);
-        tvp_enc_utf8_string_and_size(buffer, (uint8_t *)PyString_AS_STRING(utf8_string), PyString_GET_SIZE(utf8_string));
+        tvp_enc_utf8_string_and_size(buffer, PyString_AS_STRING(utf8_string), PyString_GET_SIZE(utf8_string));
         Py_DECREF(utf8_string);
 
     } else if (PyInt_Check(o)) {
