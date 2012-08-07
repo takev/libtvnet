@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <tvutils/tvutils.h>
 #include <tvpickle/tvpickle.h>
 
 static PyObject *pytvp_error;
@@ -277,6 +278,19 @@ static PyObject *pytvp_decode_tuple(tvu_buffer_t *buffer)
     return list;
 }
 
+static PyObject *pytvp_init(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    utf8_t  *argv0;
+
+    if (!PyArg_ParseTuple(args, "s", &argv0)) {
+        return NULL;
+    }
+
+    tvu_init(argv0);
+
+    Py_RETURN_NONE;    
+}
+
 static PyObject *pytvp_encode(PyObject *self __attribute__((unused)), PyObject *args)
 {
     Py_ssize_t      length;
@@ -333,6 +347,7 @@ static PyObject *pytvp_decode(PyObject *self __attribute__((unused)), PyObject *
 }
 
 static PyMethodDef pytvp_methods[] = {
+    {"tvu_init", pytvp_init, METH_VARARGS, "Initialize tvutils."},
     {"encode", pytvp_encode, METH_VARARGS, "Encode python objects passed as argument."},
     {"decode", pytvp_decode, METH_VARARGS, "Decode bytes into python objects."},
     {NULL, NULL, 0, NULL}

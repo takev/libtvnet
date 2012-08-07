@@ -1,6 +1,6 @@
 
 AC_PREREQ(2.61)
-AC_INIT(tvpickle, 0.2, take.vos@vosgames.nl)
+AC_INIT(tvpickle, 0.3, take.vos@vosgames.nl)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([buildutils])
 AM_INIT_AUTOMAKE()
@@ -42,7 +42,7 @@ AX_PYTHON_DEVEL
 
 AM_PATH_PYTHON
 
-PKG_CHECK_MODULES([DEPS], [tvutils >= 0.1])
+PKG_CHECK_MODULES([DEPS], [tvutils >= 0.3])
 
 AC_CONFIG_HEADERS([tvpickle/config.h])
 AC_CONFIG_FILES([Makefile tvpickle/Makefile tvpickle/tvpickle.pc pyext/Makefile])

@@ -8,11 +8,11 @@ DEFAULT_INCLUDES=-I$(top_srcdir)
 lib_LTLIBRARIES = libtvpickle.la
 
 libtvpickle_la_LDFLAGS = -version-info $(SHARED_VERSION_INFO)
-libtvpickle_la_SOURCES = tvpickle.c stdarg_encoder.c stdarg_decoder.c
+libtvpickle_la_SOURCES = stdarg_encoder.c stdarg_decoder.c common.c
 libtvpickle_la_LIBADD = $(DEPS_LIBS) -lm
 
 library_includedir=$(includedir)/tvpickle-$(VERSION)/tvpickle
-library_include_HEADERS = tvpickle.h encoder.h length.h decoder.h stdarg_encoder.h stdarg_decoder.h
+library_include_HEADERS = tvpickle.h encoder.h length.h decoder.h stdarg_encoder.h stdarg_decoder.h common.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = tvpickle.pc
