@@ -45,6 +45,6 @@ AM_PATH_PYTHON
 PKG_CHECK_MODULES([DEPS], [tvutils >= 0.3])
 
 AC_CONFIG_HEADERS([tvpickle/config.h])
-AC_CONFIG_FILES([Makefile tvpickle/Makefile tvpickle/tvpickle.pc tvpickle/version.h pyext/Makefile tvpkey/Makefile])
+AC_CONFIG_FILES([Makefile tvpickle/Makefile tvpickle/tvpickle.pc tvpickle/version.h pyext/Makefile])
 AC_OUTPUT
 
