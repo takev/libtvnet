@@ -1,4 +1,4 @@
-/* libtvpickle - Take Vos' Pickle; object serializer and deserializer.
+/* libtvlog - Take Vos's log library
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,15 +14,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVP_TVPICKLE_H
-#define TVP_TVPICKLE_H
+#ifndef TVLOGD_MAIN_H
+#define TVLOGD_MAIN_H
 
-#include <tvpickle/version.h>
-#include <tvpickle/length.h>
-#include <tvpickle/encoder.h>
-#include <tvpickle/decoder.h>
-#include <tvpickle/stdarg_encoder.h>
-#include <tvpickle/stdarg_decoder.h>
-#include <tvpickle/common.h>
+#include <tvutils/tvutils.h>
+
+extern utf8_t   *option_progname;
+extern utf8_t   *option_progpath;
+extern utf8_t   *option_progdir;
+extern utf8_t   option_message[];
+extern bool     option_usage;
+extern bool     option_verbose;
+extern bool     option_foreground;
 
 #endif

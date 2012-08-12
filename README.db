@@ -1,0 +1,34 @@
+Database protocol
+=================
+A database query is done through a Remote Procedure Call (see README.rpc).
+A query is always done to a remote procedure, ad-hoc SQL queries are not
+supported.
+
+Request
+-------
+The function name for the Remote Procedure Call is the name of the Remote
+Procedure. Parameters follow the function name until the end of the message.
+
+Response
+--------
+An error is recorded in the result code in the RPC message. It is followed
+by zero or more results until the end of the message.
+
+A result can be either a single value (integer, float, string, byte array) or a table (list)
+
+Table
+-----
+A table is a list type, the first entry in the list is the table header, which
+is followed by rows.
+
+Table header
+------------
+A table header is a list with column names with string types.
+
+Row
+---
+A row is a list with values (integer, float, string, byte array, list, dictionary).
+The list and dictionary types are used when a column has a compound type.
+
+
+

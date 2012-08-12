@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = tvpickle pyext
+SUBDIRS = tvpickle pyext tvpkey
 
 include am/doxygen.am
 
