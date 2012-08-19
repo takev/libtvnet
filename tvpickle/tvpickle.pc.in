@@ -5,7 +5,7 @@ includedir=${prefix}/include
 
 Name: Take Vos's pickle
 Description: Serializes and deserializes common data types.
-Requires: tvutils >= 0.3
+Requires: tvutils >= 0.4
 Version: @VERSION@
 Libs: -L${libdir} -ltvpickle -lm
 Cflags: -I${includedir}/tvpickle-@VERSION@

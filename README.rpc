@@ -2,36 +2,19 @@ Remote Procedure Call
 =====================
 A remote procedure call is done with a single request and a single response message.
 It is expected the call is done over a TIPC network, but for local testing purposes
-UDP local loopback can be used as well, as long as no more than one outstanding request
+UNIX domain sockets may be used as well, as long as no more than one outstanding request
 is done over each connection.
-
-_mm_crc32_u64
-_mm_crc32_u32
-_mm_crc32_u8
 
 Message header
 --------------
 Messages must be aligned to 64 bit boundary, and are padded with zeros to 64 bit sized.
 This allows for easy decrypting and CRC check.
 
-uint32_t - compressed data size. (excluding this header, and excluding padding.)
-uint32_t - decompressed data size.
-uint32_t - CRC value.
-uint16_t - flags
-           bit 0 - Log informational messages
-           bit 1 - Log debug messages
-           bit 2 - Use CRC check
-           bit 3 - Use compression
-           bit 4 - Use encryption
-           bit 5 - Use A/B encryption key.
-           bit 6 - ERROR Message doesn't fit in PDU.
-uint16_t - Salt.
-opaque   - Encrypted/Compressed data.
-padding  - Padding to 64 bit alignment.
-
-
 Request
 -------
+integer - flags
+    0 - Log info messages
+    1 - Log debug messages
 integer - user id
 integer - session id
 integer - transaction id
@@ -49,37 +32,5 @@ integer - status
             -2  - Bad parameters.
             -3  - Response too long, does not fit in message.
 ...
-
-       plain0           plain1           plain2
-         |                |                |
-         |                v                v
-         |    +--------> XOR   +--------> XOR
-         |    |           |    |           |
-         v    |           v    |           v
-key  -> XOR   |  key  -> XOR   |  key  -> XOR
-         |    |           |    |           |
-         +----+           +----+           +----
-         v                v                v
-      cypher0          cypher1           cypher2
-         |                |                |
-         v                v                v
-   0 -> CRC -----------> CRC -----------> CRC -------> checksum
-
-
-   0 -> CRC -----------> CRC -----------> CRC -------> checksum
-         ^                ^                ^
-         |                |                |
-      cypher0          cypher1           cypher2
-         |                |                |
-         +----+           +----+           +----
-         |    |           |    |           |
-         v    |           v    |           v
-key  -> XOR   |  key  -> XOR   |  key  -> XOR
-         |    |           |    |           |
-         |    |           v                v
-         |    +--------> XOR   +--------> XOR
-         |                |                |
-         v                v                v
-       plain0           plain1           plain2
 
 
