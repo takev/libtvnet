@@ -15,9 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #include <errno.h>
-#include <tvpickle/length.h>
-#include <tvpickle/encoder.h>
-#include <tvpickle/stdarg_encoder.h>
+#include <tvpickle/pickle_length.h>
+#include <tvpickle/pickle_encoder.h>
+#include <tvpickle/pickle_stdarg_encoder.h>
 
 ssize_t tvp_length(utf8_t const * restrict fmt, ...)
 {

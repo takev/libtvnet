@@ -23,7 +23,7 @@
 #include <math.h>
 #include <string.h>
 #include <tvutils/tvutils.h>
-#include <tvpickle/length.h>
+#include <tvpickle/pickle_length.h>
 
 #define TVP_ENC_INTEGER(buffer, contr, x, bit_size)\
         buffer->data[buffer->offset] = contr;\

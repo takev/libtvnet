@@ -18,11 +18,11 @@
 #define TVP_TVPICKLE_H
 
 #include <tvpickle/version.h>
-#include <tvpickle/length.h>
-#include <tvpickle/encoder.h>
-#include <tvpickle/decoder.h>
-#include <tvpickle/stdarg_encoder.h>
-#include <tvpickle/stdarg_decoder.h>
 #include <tvpickle/common.h>
+#include <tvpickle/pickle_length.h>
+#include <tvpickle/pickle_encoder.h>
+#include <tvpickle/pickle_decoder.h>
+#include <tvpickle/pickle_stdarg_encoder.h>
+#include <tvpickle/pickle_stdarg_decoder.h>
 
 #endif

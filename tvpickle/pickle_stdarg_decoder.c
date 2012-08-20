@@ -16,8 +16,8 @@
  */
 #include <errno.h>
 #include <stdint.h>
-#include <tvpickle/decoder.h>
-#include <tvpickle/stdarg_decoder.h>
+#include <tvpickle/pickle_decoder.h>
+#include <tvpickle/pickle_stdarg_decoder.h>
 
 int tvp_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
 {
