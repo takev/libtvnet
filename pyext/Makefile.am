@@ -4,10 +4,10 @@ AM_CFLAGS = -Wall -W -Werror -pedantic -Wno-sign-compare -Wno-long-long -Wno-unu
 DEFAULT_INCLUDES=-I$(top_srcdir)
 
 pkgpython_PYTHON = __init__.py
-pkgpython_LTLIBRARIES = tvpicklemodule.la
-tvpicklemodule_la_SOURCES = tvpicklemodule.c
-tvpicklemodule_la_LDFLAGS = -module $(PYTHON_LDFLAGS)
-tvpicklemodule_la_LIBADD = -ltvpickle $(DEPS_LIBS)
+pkgpython_LTLIBRARIES = tvrpcmodule.la
+tvrpcmodule_la_SOURCES = tvrpcmodule.c
+tvrpcmodule_la_LDFLAGS = -module $(PYTHON_LDFLAGS) -L../tvrpc
+tvrpcmodule_la_LIBADD = -ltvrpc $(DEPS_LIBS)
 
 bin_SCRIPTS=tvpsend
 

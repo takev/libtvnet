@@ -1,4 +1,4 @@
-/* libtvpickle - Take Vos' Pickle; object serializer and deserializer.
+/* libtvrpc - Take Vos' Pickle; object serializer and deserializer.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,11 +14,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVP_VERSION_H
-#define TVP_VERSION_H
+#ifndef TVR_TVRPC_H
+#define TVR_TVRPC_H
 
-#define TVP_VERSION "@VERSION@"
-
-extern char *tvp_version;
+#include <tvrpc/version.h>
+#include <tvrpc/common.h>
+#include <tvrpc/pickle_length.h>
+#include <tvrpc/pickle_encoder.h>
+#include <tvrpc/pickle_decoder.h>
+#include <tvrpc/pickle_stdarg_encoder.h>
+#include <tvrpc/pickle_stdarg_decoder.h>
 
 #endif

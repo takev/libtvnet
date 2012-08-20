@@ -14,15 +14,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVP_TVPICKLE_H
-#define TVP_TVPICKLE_H
+#ifndef TVR_VERSION_H
+#define TVR_VERSION_H
 
-#include <tvpickle/version.h>
-#include <tvpickle/common.h>
-#include <tvpickle/pickle_length.h>
-#include <tvpickle/pickle_encoder.h>
-#include <tvpickle/pickle_decoder.h>
-#include <tvpickle/pickle_stdarg_encoder.h>
-#include <tvpickle/pickle_stdarg_decoder.h>
+#define TVR_VERSION "@VERSION@"
+
+extern char *tvr_version;
 
 #endif

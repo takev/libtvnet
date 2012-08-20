@@ -1,9 +1,9 @@
 
-import tvpickle as c_tvpickle
+import tvrpc as c_tvrpc
 import sys
 
-c_tvpickle.tvu_init(sys.argv[0])
+c_tvrpc.tvu_init(sys.argv[0])
 
-encode = c_tvpickle.encode
-decode = c_tvpickle.decode
+encode = c_tvrpc.encode
+decode = c_tvrpc.decode
 

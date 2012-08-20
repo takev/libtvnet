@@ -1,16 +1,16 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <tvutils/tvutils.h>
-#include <tvpickle/tvpickle.h>
+#include <tvrpc/tvrpc.h>
 
-static PyObject *pytvp_error;
+static PyObject *pytvr_error;
 
-static Py_ssize_t pytvp_length_recurse_bytearray(Py_ssize_t size)
+static Py_ssize_t pytvr_length_recurse_bytearray(Py_ssize_t size)
 {
-    return tvp_len_binary_string(size);
+    return tvr_len_binary_string(size);
 }
 
-static Py_ssize_t pytvp_length_recurse(PyObject *o)
+static Py_ssize_t pytvr_length_recurse(PyObject *o)
 {
     Py_ssize_t  length;
     Py_ssize_t  rec_length;
@@ -23,40 +23,40 @@ static Py_ssize_t pytvp_length_recurse(PyObject *o)
     PyObject    *utf8_string;
 
     if (PyByteArray_Check(o)) {
-        length = tvp_len_binary_string(PyByteArray_GET_SIZE(o));
+        length = tvr_len_binary_string(PyByteArray_GET_SIZE(o));
 
     } else if (PyString_Check(o))  {
-        length = tvp_len_binary_string(PyString_GET_SIZE(o));
+        length = tvr_len_binary_string(PyString_GET_SIZE(o));
 
     } else if (PyUnicode_Check(o)) {
         if ((utf8_string = PyUnicode_AsUTF8String(o)) == NULL) {
             return -1;
         }
-        length = tvp_len_utf8_string(PyString_GET_SIZE(utf8_string));
+        length = tvr_len_utf8_string(PyString_GET_SIZE(utf8_string));
         Py_DECREF(utf8_string);
 
     } else if (PyInt_Check(o)) {
-        length = tvp_len_integer(PyInt_AS_LONG(o));
+        length = tvr_len_integer(PyInt_AS_LONG(o));
 
     } else if (PyFloat_Check(o)) {
-        length = tvp_len_float(PyFloat_AS_DOUBLE(o));
+        length = tvr_len_float(PyFloat_AS_DOUBLE(o));
 
     } else if (o == Py_None) {
-        length = tvp_len_null();
+        length = tvr_len_null();
 
     } else if (PyMapping_Check(o)) {
         nr_items = PyMapping_Size(o);
         iterator = PyObject_GetIter(o);
 
-        length = tvp_len_dictionary(nr_items);
+        length = tvr_len_dictionary(nr_items);
         while ((key = PyIter_Next(iterator)) != NULL) {
             value = PyObject_GetItem(o, key);
 
-            if ((rec_length = pytvp_length_recurse(key)) == -1) {
+            if ((rec_length = pytvr_length_recurse(key)) == -1) {
                 return -1;
             }
             length+= rec_length;
-            if ((rec_length = pytvp_length_recurse(value)) == -1) {
+            if ((rec_length = pytvr_length_recurse(value)) == -1) {
                 return -1;
             }
             length+= rec_length;
@@ -67,10 +67,10 @@ static Py_ssize_t pytvp_length_recurse(PyObject *o)
     } else if (PySequence_Check(o)) {
         nr_items = PySequence_Length(o);
 
-        length = tvp_len_list(nr_items);
+        length = tvr_len_list(nr_items);
         for (item_nr = 0; item_nr < nr_items; item_nr++) {
             item  = PySequence_Fast_GET_ITEM(o, item_nr);
-            if ((rec_length = pytvp_length_recurse(item)) == -1) {
+            if ((rec_length = pytvr_length_recurse(item)) == -1) {
                 return -1;
             }
             length += rec_length;
@@ -80,9 +80,9 @@ static Py_ssize_t pytvp_length_recurse(PyObject *o)
         nr_items = PySet_Size(o);
         iterator = PyObject_GetIter(o);
 
-        length = tvp_len_list(nr_items);
+        length = tvr_len_list(nr_items);
         while ((item = PyIter_Next(iterator)) != NULL) {
-            if ((rec_length = pytvp_length_recurse(item)) == -1) {
+            if ((rec_length = pytvr_length_recurse(item)) == -1) {
                 return -1;
             }
             length += rec_length;
@@ -90,14 +90,14 @@ static Py_ssize_t pytvp_length_recurse(PyObject *o)
         }
 
     } else {
-        PyErr_SetString(pytvp_error, "Unexpected type.");
+        PyErr_SetString(pytvr_error, "Unexpected type.");
         return -1;
     }
 
     return length;
 }
 
-static void pytvp_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
+static void pytvr_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
 {
     Py_ssize_t  item_nr;
     Py_ssize_t  nr_items;
@@ -108,35 +108,35 @@ static void pytvp_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
     PyObject    *utf8_string;
 
     if (PyByteArray_Check(o)) {
-        tvp_enc_binary_string(buffer, (uint8_t *)PyByteArray_AS_STRING(o), PyByteArray_GET_SIZE(o));
+        tvr_enc_binary_string(buffer, (uint8_t *)PyByteArray_AS_STRING(o), PyByteArray_GET_SIZE(o));
 
     } else if (PyString_Check(o))  {
-        tvp_enc_binary_string(buffer, (uint8_t *)PyString_AS_STRING(o), PyString_GET_SIZE(o));
+        tvr_enc_binary_string(buffer, (uint8_t *)PyString_AS_STRING(o), PyString_GET_SIZE(o));
 
     } else if (PyUnicode_Check(o)) {
         utf8_string = PyUnicode_AsUTF8String(o);
-        tvp_enc_utf8_string_and_size(buffer, PyString_AS_STRING(utf8_string), PyString_GET_SIZE(utf8_string));
+        tvr_enc_utf8_string_and_size(buffer, PyString_AS_STRING(utf8_string), PyString_GET_SIZE(utf8_string));
         Py_DECREF(utf8_string);
 
     } else if (PyInt_Check(o)) {
-        tvp_enc_integer(buffer, PyInt_AS_LONG(o));
+        tvr_enc_integer(buffer, PyInt_AS_LONG(o));
 
     } else if (PyFloat_Check(o)) {
-        tvp_enc_float(buffer, PyFloat_AS_DOUBLE(o));
+        tvr_enc_float(buffer, PyFloat_AS_DOUBLE(o));
 
     } else if (o == Py_None) {
-        tvp_enc_null(buffer);
+        tvr_enc_null(buffer);
 
     } else if (PyMapping_Check(o)) {
         nr_items = PyMapping_Size(o);
         iterator = PyObject_GetIter(o);
 
-        tvp_enc_dictionary(buffer, nr_items);
+        tvr_enc_dictionary(buffer, nr_items);
         while ((key = PyIter_Next(iterator)) != NULL) {
             value = PyObject_GetItem(o, key);
 
-            pytvp_encode_recurse(buffer, key);
-            pytvp_encode_recurse(buffer, value);
+            pytvr_encode_recurse(buffer, key);
+            pytvr_encode_recurse(buffer, value);
             Py_DECREF(value);
             Py_DECREF(key);
         }
@@ -144,31 +144,31 @@ static void pytvp_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
     } else if (PySequence_Check(o)) {
         Py_ssize_t nr_objects = PySequence_Length(o);
 
-        tvp_enc_list(buffer, nr_objects);
+        tvr_enc_list(buffer, nr_objects);
         for (Py_ssize_t object_nr = 0; object_nr < nr_objects; object_nr++) {
             PyObject *object  = PySequence_Fast_GET_ITEM(o, object_nr);
 
-            pytvp_encode_recurse(buffer, object);
+            pytvr_encode_recurse(buffer, object);
         }
 
     } else if (PyAnySet_Check(o)) {
         nr_items = PySet_Size(o);
         iterator = PyObject_GetIter(o);
 
-        tvp_enc_list(buffer, nr_items);
+        tvr_enc_list(buffer, nr_items);
         while ((item = PyIter_Next(iterator)) != NULL) {
-            pytvp_encode_recurse(buffer, item);
+            pytvr_encode_recurse(buffer, item);
             Py_DECREF(item);
         }
 
     } else {
-        PyErr_SetString(pytvp_error, "Unexpected type.");
+        PyErr_SetString(pytvr_error, "Unexpected type.");
     }
 }
 
-static PyObject *pytvp_decode_recurse(tvu_buffer_t *buffer)
+static PyObject *pytvr_decode_recurse(tvu_buffer_t *buffer)
 {
-    tvp_token_t token = tvp_dec_token(buffer);
+    tvr_token_t token = tvr_dec_token(buffer);
     Py_ssize_t  item_nr;
     PyObject    *list;
     PyObject    *dictionary;
@@ -180,7 +180,7 @@ static PyObject *pytvp_decode_recurse(tvu_buffer_t *buffer)
     case TVP_TOKEN_END:
         return (PyObject *)-1;
     case TVP_TOKEN_ERROR:
-        PyErr_SetString(pytvp_error, "Running over bound during decoding.");
+        PyErr_SetString(pytvr_error, "Running over bound during decoding.");
         return NULL;
     case TVP_TOKEN_NULL:
         Py_INCREF(Py_None);
@@ -196,7 +196,7 @@ static PyObject *pytvp_decode_recurse(tvu_buffer_t *buffer)
     case TVP_TOKEN_LIST:
         list = PyList_New(token.value.u);
         for (item_nr = 0; item_nr < token.value.u; item_nr++) {
-            if ((object = pytvp_decode_recurse(buffer)) == NULL) {
+            if ((object = pytvr_decode_recurse(buffer)) == NULL) {
                 return NULL;
             }
             PyList_SET_ITEM(list, item_nr, object);
@@ -205,10 +205,10 @@ static PyObject *pytvp_decode_recurse(tvu_buffer_t *buffer)
     case TVP_TOKEN_DICTIONARY:
         dictionary = PyDict_New();
         for (item_nr = 0; item_nr < token.value.u; item_nr++) {
-            if ((key = pytvp_decode_recurse(buffer)) == NULL) {
+            if ((key = pytvr_decode_recurse(buffer)) == NULL) {
                 return NULL;
             }
-            if ((value = pytvp_decode_recurse(buffer)) == NULL) {
+            if ((value = pytvr_decode_recurse(buffer)) == NULL) {
                 return NULL;
             }
             if (PyDict_SetItem(dictionary, key, value) == -1) {
@@ -219,13 +219,13 @@ static PyObject *pytvp_decode_recurse(tvu_buffer_t *buffer)
         }
         return dictionary;
     default:
-        PyErr_SetString(pytvp_error, "Unexpected token type.");
+        PyErr_SetString(pytvr_error, "Unexpected token type.");
         return NULL;
     }
 }
 
 
-static Py_ssize_t pytvp_length_tuple(PyObject *args)
+static Py_ssize_t pytvr_length_tuple(PyObject *args)
 {
     Py_ssize_t length = 0;
     Py_ssize_t nr_objects;
@@ -233,13 +233,13 @@ static Py_ssize_t pytvp_length_tuple(PyObject *args)
     Py_ssize_t object_length;
 
     if (!PySequence_Check(args)) {
-        PyErr_SetString(pytvp_error, "Expecting a sequence as argument");
+        PyErr_SetString(pytvr_error, "Expecting a sequence as argument");
         return -1;
     }
 
     nr_objects = PySequence_Length(args);
     for (object_nr = 0; object_nr < nr_objects; object_nr++) {
-        if ((object_length = pytvp_length_recurse(PySequence_Fast_GET_ITEM(args, object_nr))) == -1) {
+        if ((object_length = pytvr_length_recurse(PySequence_Fast_GET_ITEM(args, object_nr))) == -1) {
             return -1;
         }
         length+= object_length;
@@ -248,25 +248,25 @@ static Py_ssize_t pytvp_length_tuple(PyObject *args)
     return length;
 }
 
-static void pytvp_encode_tuple(tvu_buffer_t *buffer, PyObject *args)
+static void pytvr_encode_tuple(tvu_buffer_t *buffer, PyObject *args)
 {
     Py_ssize_t nr_objects;
     Py_ssize_t object_nr;
 
     nr_objects = PySequence_Length(args);
     for (object_nr = 0; object_nr < nr_objects; object_nr++) {
-        pytvp_encode_recurse(buffer, PySequence_Fast_GET_ITEM(args, object_nr));
+        pytvr_encode_recurse(buffer, PySequence_Fast_GET_ITEM(args, object_nr));
     }
 }
 
-static PyObject *pytvp_decode_tuple(tvu_buffer_t *buffer)
+static PyObject *pytvr_decode_tuple(tvu_buffer_t *buffer)
 {
     PyObject    *list = PyList_New(0);
     PyObject    *object;
-    tvp_token_t token;
+    tvr_token_t token;
 
     while (1) {
-        if ((object = pytvp_decode_recurse(buffer)) == NULL) {
+        if ((object = pytvr_decode_recurse(buffer)) == NULL) {
             return NULL;
         }
         if (object == (PyObject *)-1) {
@@ -278,7 +278,7 @@ static PyObject *pytvp_decode_tuple(tvu_buffer_t *buffer)
     return list;
 }
 
-static PyObject *pytvp_init(PyObject *self __attribute__((unused)), PyObject *args)
+static PyObject *pytvr_init(PyObject *self __attribute__((unused)), PyObject *args)
 {
     utf8_t  *argv0;
 
@@ -291,13 +291,13 @@ static PyObject *pytvp_init(PyObject *self __attribute__((unused)), PyObject *ar
     Py_RETURN_NONE;    
 }
 
-static PyObject *pytvp_encode(PyObject *self __attribute__((unused)), PyObject *args)
+static PyObject *pytvr_encode(PyObject *self __attribute__((unused)), PyObject *args)
 {
     Py_ssize_t      length;
     PyObject        *byte_array;
     tvu_buffer_t    buffer;
     
-    if ((length = pytvp_length_tuple(args)) == -1) {
+    if ((length = pytvr_length_tuple(args)) == -1) {
         return NULL;
     }
 
@@ -308,11 +308,11 @@ static PyObject *pytvp_encode(PyObject *self __attribute__((unused)), PyObject *
     buffer.data = (uint8_t *)PyString_AS_STRING(byte_array);
     buffer.offset = 0;
 
-    pytvp_encode_tuple(&buffer, args);
+    pytvr_encode_tuple(&buffer, args);
     return byte_array;
 }
 
-static PyObject *pytvp_decode(PyObject *self __attribute__((unused)), PyObject *args)
+static PyObject *pytvr_decode(PyObject *self __attribute__((unused)), PyObject *args)
 {
     PyObject        *list;
     PyObject        *tuple;
@@ -328,7 +328,7 @@ static PyObject *pytvp_decode(PyObject *self __attribute__((unused)), PyObject *
     buffer.data = (uint8_t *)data;
     buffer.offset = 0;
     
-    if ((list = pytvp_decode_tuple(&buffer)) == NULL) {
+    if ((list = pytvr_decode_tuple(&buffer)) == NULL) {
         return NULL;
     }
 
@@ -346,22 +346,22 @@ static PyObject *pytvp_decode(PyObject *self __attribute__((unused)), PyObject *
     }
 }
 
-static PyMethodDef pytvp_methods[] = {
-    {"tvu_init", pytvp_init, METH_VARARGS, "Initialize tvutils."},
-    {"encode", pytvp_encode, METH_VARARGS, "Encode python objects passed as argument."},
-    {"decode", pytvp_decode, METH_VARARGS, "Decode bytes into python objects."},
+static PyMethodDef pytvr_methods[] = {
+    {"tvu_init", pytvr_init, METH_VARARGS, "Initialize tvutils."},
+    {"encode", pytvr_encode, METH_VARARGS, "Encode python objects passed as argument."},
+    {"decode", pytvr_decode, METH_VARARGS, "Decode bytes into python objects."},
     {NULL, NULL, 0, NULL}
 };
 
-PyMODINIT_FUNC inittvpickle(void)
+PyMODINIT_FUNC inittvrpc(void)
 {
     PyObject *m;
 
-    if ((m = Py_InitModule("tvpickle", pytvp_methods)) == NULL) {
+    if ((m = Py_InitModule("tvrpc", pytvr_methods)) == NULL) {
         return;
     }
 
-    pytvp_error = PyErr_NewException("pytvp.error", NULL, NULL);
-    Py_INCREF(pytvp_error);
-    PyModule_AddObject(m, "error", pytvp_error);
+    pytvr_error = PyErr_NewException("pytvr.error", NULL, NULL);
+    Py_INCREF(pytvr_error);
+    PyModule_AddObject(m, "error", pytvr_error);
 }

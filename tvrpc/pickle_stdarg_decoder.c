@@ -1,4 +1,4 @@
-/* libtvpickle - Take Vos' Pickle; object serializer and deserializer.
+/* libtvrpc - Take Vos' Pickle; object serializer and deserializer.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -16,26 +16,26 @@
  */
 #include <errno.h>
 #include <stdint.h>
-#include <tvpickle/pickle_decoder.h>
-#include <tvpickle/pickle_stdarg_decoder.h>
+#include <tvrpc/pickle_decoder.h>
+#include <tvrpc/pickle_stdarg_decoder.h>
 
-int tvp_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
+int tvr_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
 {
     va_list ap;
     int     ret;
 
     va_start(ap, fmt);
-    ret = tvp_vdecode(buffer, fmt, ap);
+    ret = tvr_vdecode(buffer, fmt, ap);
     va_end(ap);
 
     return ret;
 }
 
-int tvp_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap)
+int tvr_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap)
 {
     utf8_t      c;
     utf8_t      *s;
-    tvp_token_t token;
+    tvr_token_t token;
     int8_t      *pi8;
     uint8_t     *pu8;
     int16_t     *pi16;
@@ -50,7 +50,7 @@ int tvp_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_
 
 
     while ((c = *fmt++) != '\0') {
-        token = tvp_dec_token(buffer);
+        token = tvr_dec_token(buffer);
         switch (c) {
         case 'b':
             pi8 = va_arg(ap, int8_t *);

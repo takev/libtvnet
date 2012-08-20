@@ -1,4 +1,4 @@
-/* libtvpickle - Take Vos' Pickle; object serializer and deserializer.
+/* libtvrpc - Take Vos' Pickle; object serializer and deserializer.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVP_DECODER_H
-#define TVP_DECODER_H
+#ifndef TVR_PICKLE_DECODER_H
+#define TVR_PICKLE_DECODER_H
 
 #include <stdint.h>
 #include <errno.h>
@@ -31,19 +31,19 @@ typedef enum {
     TVP_TOKEN_BIN_STRING  = 5,
     TVP_TOKEN_LIST        = 6,
     TVP_TOKEN_DICTIONARY  = 7
-} tvp_type_t;
+} tvr_type_t;
 
 typedef union {
     int64_t     i;
     double      f;
     uint64_t    u;
-} tvp_value_t;
+} tvr_value_t;
 
 typedef struct {
-    tvp_type_t  type;
-    tvp_value_t value;
+    tvr_type_t  type;
+    tvr_value_t value;
     void        *data;
-} tvp_token_t;
+} tvr_token_t;
 
 
 #define TVP_DEC_BOUND_CHECK(token, buffer, _size, _type)\
@@ -70,9 +70,9 @@ typedef struct {
     token.value.u = tvu_get_be_u ## bit_size (&buffer->data[buffer->offset]);\
     buffer->offset+= (bit_size / 8);
 
-static inline tvp_token_t tvp_dec_number(tvu_buffer_t *buffer, uint8_t c)
+static inline tvr_token_t tvr_dec_number(tvu_buffer_t *buffer, uint8_t c)
 {
-    tvp_token_t token;
+    tvr_token_t token;
 
     switch (c) {
     case 0x40: // NULL
@@ -101,9 +101,9 @@ static inline tvp_token_t tvp_dec_number(tvu_buffer_t *buffer, uint8_t c)
     return token;
 }
 
-static inline tvp_token_t tvp_dec_container(tvu_buffer_t *buffer, uint8_t c, uint8_t type)
+static inline tvr_token_t tvr_dec_container(tvu_buffer_t *buffer, uint8_t c, uint8_t type)
 {
-    tvp_token_t token;
+    tvr_token_t token;
 
     switch (c & 0x1f) {
     case 0x1f: // 32 bit integer
@@ -123,9 +123,9 @@ static inline tvp_token_t tvp_dec_container(tvu_buffer_t *buffer, uint8_t c, uin
     return token;
 }
 
-static inline tvp_token_t tvp_dec_token(tvu_buffer_t *buffer)
+static inline tvr_token_t tvr_dec_token(tvu_buffer_t *buffer)
 {
-    tvp_token_t     token;
+    tvr_token_t     token;
     uint8_t         c;
 
     TVP_DEC_BOUND_CHECK(token, buffer, 1, TVP_TOKEN_END);
@@ -136,27 +136,27 @@ static inline tvp_token_t tvp_dec_token(tvu_buffer_t *buffer)
     case 1:
     case 2:
     case 3:
-        token = tvp_dec_number(buffer, c);
+        token = tvr_dec_number(buffer, c);
         break;
     case 4:
-        token = tvp_dec_container(buffer, c, TVP_TOKEN_UTF8_STRING);
+        token = tvr_dec_container(buffer, c, TVP_TOKEN_UTF8_STRING);
         TVP_DEC_BOUND_CHECK(token, buffer, token.value.u, TVP_TOKEN_ERROR);
         token.data = &buffer->data[buffer->offset];
         // Skip over the string + NUL.
         buffer->offset+= token.value.u + 1;
         break;
     case 5:
-        token = tvp_dec_container(buffer, c, TVP_TOKEN_BIN_STRING);
+        token = tvr_dec_container(buffer, c, TVP_TOKEN_BIN_STRING);
         TVP_DEC_BOUND_CHECK(token, buffer, token.value.u, TVP_TOKEN_ERROR);
         token.data = &buffer->data[buffer->offset];
         // Skip over the binary data.
         buffer->offset+= token.value.u;
         break;
     case 6:
-        token = tvp_dec_container(buffer, c, TVP_TOKEN_LIST);
+        token = tvr_dec_container(buffer, c, TVP_TOKEN_LIST);
         break;
     case 7:
-        token = tvp_dec_container(buffer, c, TVP_TOKEN_DICTIONARY);
+        token = tvr_dec_container(buffer, c, TVP_TOKEN_DICTIONARY);
         break;
     }
 

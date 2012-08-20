@@ -1,4 +1,4 @@
-/* libtvpickle - Take Vos' Pickle; object serializer and deserializer.
+/* libtvrickle - Take Vos' Pickle; object serializer and deserializer.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -16,9 +16,9 @@
  */
 
 #include <tvutils/tvutils.h>
-#include <tvpickle/common.h>
+#include <tvrpc/common.h>
 
-int tvp_init(void)
+int tvr_init(void)
 {
     return 1;
 }
