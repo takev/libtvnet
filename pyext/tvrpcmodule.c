@@ -7,7 +7,7 @@ static PyObject *pytvr_error;
 
 static Py_ssize_t pytvr_length_recurse_bytearray(Py_ssize_t size)
 {
-    return tvr_len_binary_string(size);
+    return tvr_pickle_length_binary_string(size);
 }
 
 static Py_ssize_t pytvr_length_recurse(PyObject *o)
@@ -23,32 +23,32 @@ static Py_ssize_t pytvr_length_recurse(PyObject *o)
     PyObject    *utf8_string;
 
     if (PyByteArray_Check(o)) {
-        length = tvr_len_binary_string(PyByteArray_GET_SIZE(o));
+        length = tvr_pickle_length_binary_string(PyByteArray_GET_SIZE(o));
 
     } else if (PyString_Check(o))  {
-        length = tvr_len_binary_string(PyString_GET_SIZE(o));
+        length = tvr_pickle_length_binary_string(PyString_GET_SIZE(o));
 
     } else if (PyUnicode_Check(o)) {
         if ((utf8_string = PyUnicode_AsUTF8String(o)) == NULL) {
             return -1;
         }
-        length = tvr_len_utf8_string(PyString_GET_SIZE(utf8_string));
+        length = tvr_pickle_length_utf8_string(PyString_GET_SIZE(utf8_string));
         Py_DECREF(utf8_string);
 
     } else if (PyInt_Check(o)) {
-        length = tvr_len_integer(PyInt_AS_LONG(o));
+        length = tvr_pickle_length_integer(PyInt_AS_LONG(o));
 
     } else if (PyFloat_Check(o)) {
-        length = tvr_len_float(PyFloat_AS_DOUBLE(o));
+        length = tvr_pickle_length_float(PyFloat_AS_DOUBLE(o));
 
     } else if (o == Py_None) {
-        length = tvr_len_null();
+        length = tvr_pickle_length_null();
 
     } else if (PyMapping_Check(o)) {
         nr_items = PyMapping_Size(o);
         iterator = PyObject_GetIter(o);
 
-        length = tvr_len_dictionary(nr_items);
+        length = tvr_pickle_length_dictionary(nr_items);
         while ((key = PyIter_Next(iterator)) != NULL) {
             value = PyObject_GetItem(o, key);
 
@@ -67,7 +67,7 @@ static Py_ssize_t pytvr_length_recurse(PyObject *o)
     } else if (PySequence_Check(o)) {
         nr_items = PySequence_Length(o);
 
-        length = tvr_len_list(nr_items);
+        length = tvr_pickle_length_list(nr_items);
         for (item_nr = 0; item_nr < nr_items; item_nr++) {
             item  = PySequence_Fast_GET_ITEM(o, item_nr);
             if ((rec_length = pytvr_length_recurse(item)) == -1) {
@@ -80,7 +80,7 @@ static Py_ssize_t pytvr_length_recurse(PyObject *o)
         nr_items = PySet_Size(o);
         iterator = PyObject_GetIter(o);
 
-        length = tvr_len_list(nr_items);
+        length = tvr_pickle_length_list(nr_items);
         while ((item = PyIter_Next(iterator)) != NULL) {
             if ((rec_length = pytvr_length_recurse(item)) == -1) {
                 return -1;
@@ -108,30 +108,30 @@ static void pytvr_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
     PyObject    *utf8_string;
 
     if (PyByteArray_Check(o)) {
-        tvr_enc_binary_string(buffer, (uint8_t *)PyByteArray_AS_STRING(o), PyByteArray_GET_SIZE(o));
+        tvr_pickle_encode_binary_string(buffer, (uint8_t *)PyByteArray_AS_STRING(o), PyByteArray_GET_SIZE(o));
 
     } else if (PyString_Check(o))  {
-        tvr_enc_binary_string(buffer, (uint8_t *)PyString_AS_STRING(o), PyString_GET_SIZE(o));
+        tvr_pickle_encode_binary_string(buffer, (uint8_t *)PyString_AS_STRING(o), PyString_GET_SIZE(o));
 
     } else if (PyUnicode_Check(o)) {
         utf8_string = PyUnicode_AsUTF8String(o);
-        tvr_enc_utf8_string_and_size(buffer, PyString_AS_STRING(utf8_string), PyString_GET_SIZE(utf8_string));
+        tvr_pickle_encode_utf8_string_and_size(buffer, PyString_AS_STRING(utf8_string), PyString_GET_SIZE(utf8_string));
         Py_DECREF(utf8_string);
 
     } else if (PyInt_Check(o)) {
-        tvr_enc_integer(buffer, PyInt_AS_LONG(o));
+        tvr_pickle_encode_integer(buffer, PyInt_AS_LONG(o));
 
     } else if (PyFloat_Check(o)) {
-        tvr_enc_float(buffer, PyFloat_AS_DOUBLE(o));
+        tvr_pickle_encode_float(buffer, PyFloat_AS_DOUBLE(o));
 
     } else if (o == Py_None) {
-        tvr_enc_null(buffer);
+        tvr_pickle_encode_null(buffer);
 
     } else if (PyMapping_Check(o)) {
         nr_items = PyMapping_Size(o);
         iterator = PyObject_GetIter(o);
 
-        tvr_enc_dictionary(buffer, nr_items);
+        tvr_pickle_encode_dictionary(buffer, nr_items);
         while ((key = PyIter_Next(iterator)) != NULL) {
             value = PyObject_GetItem(o, key);
 
@@ -144,7 +144,7 @@ static void pytvr_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
     } else if (PySequence_Check(o)) {
         Py_ssize_t nr_objects = PySequence_Length(o);
 
-        tvr_enc_list(buffer, nr_objects);
+        tvr_pickle_encode_list(buffer, nr_objects);
         for (Py_ssize_t object_nr = 0; object_nr < nr_objects; object_nr++) {
             PyObject *object  = PySequence_Fast_GET_ITEM(o, object_nr);
 
@@ -155,7 +155,7 @@ static void pytvr_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
         nr_items = PySet_Size(o);
         iterator = PyObject_GetIter(o);
 
-        tvr_enc_list(buffer, nr_items);
+        tvr_pickle_encode_list(buffer, nr_items);
         while ((item = PyIter_Next(iterator)) != NULL) {
             pytvr_encode_recurse(buffer, item);
             Py_DECREF(item);
@@ -168,7 +168,7 @@ static void pytvr_encode_recurse(tvu_buffer_t *buffer, PyObject *o)
 
 static PyObject *pytvr_decode_recurse(tvu_buffer_t *buffer)
 {
-    tvr_token_t token = tvr_dec_token(buffer);
+    tvr_pickle_token_t token = tvr_pickle_decode_token(buffer);
     Py_ssize_t  item_nr;
     PyObject    *list;
     PyObject    *dictionary;
@@ -177,23 +177,23 @@ static PyObject *pytvr_decode_recurse(tvu_buffer_t *buffer)
     PyObject    *value;
 
     switch (token.type) {
-    case TVP_TOKEN_END:
+    case TVR_PICKLE_TOKEN_END:
         return (PyObject *)-1;
-    case TVP_TOKEN_ERROR:
+    case TVR_PICKLE_TOKEN_ERROR:
         PyErr_SetString(pytvr_error, "Running over bound during decoding.");
         return NULL;
-    case TVP_TOKEN_NULL:
+    case TVR_PICKLE_TOKEN_NULL:
         Py_INCREF(Py_None);
         return Py_None;
-    case TVP_TOKEN_INTEGER:
+    case TVR_PICKLE_TOKEN_INTEGER:
         return PyInt_FromLong(token.value.i);
-    case TVP_TOKEN_FLOAT:
+    case TVR_PICKLE_TOKEN_FLOAT:
         return PyFloat_FromDouble(token.value.f);
-    case TVP_TOKEN_UTF8_STRING:
+    case TVR_PICKLE_TOKEN_UTF8_STRING:
         return PyUnicode_DecodeUTF8((char *)token.data, token.value.u, NULL);
-    case TVP_TOKEN_BIN_STRING:
+    case TVR_PICKLE_TOKEN_BIN_STRING:
         return PyString_FromStringAndSize((char *)token.data, token.value.u);
-    case TVP_TOKEN_LIST:
+    case TVR_PICKLE_TOKEN_LIST:
         list = PyList_New(token.value.u);
         for (item_nr = 0; item_nr < token.value.u; item_nr++) {
             if ((object = pytvr_decode_recurse(buffer)) == NULL) {
@@ -202,7 +202,7 @@ static PyObject *pytvr_decode_recurse(tvu_buffer_t *buffer)
             PyList_SET_ITEM(list, item_nr, object);
         }
         return list;
-    case TVP_TOKEN_DICTIONARY:
+    case TVR_PICKLE_TOKEN_DICTIONARY:
         dictionary = PyDict_New();
         for (item_nr = 0; item_nr < token.value.u; item_nr++) {
             if ((key = pytvr_decode_recurse(buffer)) == NULL) {
@@ -263,7 +263,7 @@ static PyObject *pytvr_decode_tuple(tvu_buffer_t *buffer)
 {
     PyObject    *list = PyList_New(0);
     PyObject    *object;
-    tvr_token_t token;
+    tvr_pickle_token_t token;
 
     while (1) {
         if ((object = pytvr_decode_recurse(buffer)) == NULL) {

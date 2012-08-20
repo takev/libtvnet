@@ -41,25 +41,25 @@
  * @param fmt   Format string of the arguments.
  * @param ...   The fields to encode.
  */
-ssize_t tvr_length(utf8_t const * restrict fmt, ...);
+ssize_t tvr_pickle_length(utf8_t const * restrict fmt, ...);
 
 /**
  * @param fmt   Format string of the arguments.
  * @param ...   The fields to encode.
  */
-int tvr_encode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...);
+int tvr_pickle_encode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...);
 
 /** Calculate the length for a buffer
  * @param fmt   Format string of the arguments.
  * @param ap    The fields to encode.
  */
-ssize_t tvr_vlength(utf8_t const * restrict fmt, va_list ap);
+ssize_t tvr_pickle_vlength(utf8_t const * restrict fmt, va_list ap);
 
 /**
  * @param fmt   Format string of the arguments.
  * @param ap    The fields to encode.
  */
-int tvr_vencode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap);
+int tvr_pickle_vencode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap);
 
 
 #endif

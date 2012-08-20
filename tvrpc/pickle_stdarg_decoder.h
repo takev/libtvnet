@@ -24,13 +24,13 @@
  * @param fmt   Format string of the arguments.
  * @param ...   Pointers to fields to decode.
  */
-int tvr_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...);
+int tvr_pickle_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...);
 
 /**
  * @param fmt   Format string of the arguments.
  * @param ap    The fields to encode.
  */
-int tvr_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap);
+int tvr_pickle_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap);
 
 
 #endif

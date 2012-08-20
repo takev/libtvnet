@@ -21,7 +21,7 @@
 #include <math.h>
 #include <tvutils/tvutils.h>
 
-static inline size_t tvr_len_integer(int64_t x)
+static inline size_t tvr_pickle_length_integer(int64_t x)
 {
     if (x  > INT32_MAX) {
         return 9;
@@ -40,13 +40,13 @@ static inline size_t tvr_len_integer(int64_t x)
     }
 }
 
-static inline size_t tvr_len_float(double x)
+static inline size_t tvr_pickle_length_float(double x)
 {
     float y = x;
 
     // Integer test.
     if (floor(x) == x) {
-        return tvr_len_integer(x);
+        return tvr_pickle_length_integer(x);
 
     // 32-bit float test.
     } else if ((double)y == x) {
@@ -58,12 +58,12 @@ static inline size_t tvr_len_float(double x)
     }
 }
 
-static inline size_t tvr_len_null()
+static inline size_t tvr_pickle_length_null()
 {
     return 1;
 }
 
-static inline size_t tvr_len_compound(size_t x)
+static inline size_t tvr_pickle_length_compound(size_t x)
 {
     if (x > UINT16_MAX) {
         return 5;
@@ -76,30 +76,30 @@ static inline size_t tvr_len_compound(size_t x)
     }
 }
 
-static inline size_t tvr_len_string(size_t buffer_size)
+static inline size_t tvr_pickle_length_string(size_t buffer_size)
 {
-    return tvr_len_compound(buffer_size) + buffer_size;
+    return tvr_pickle_length_compound(buffer_size) + buffer_size;
 }
 
-static inline size_t tvr_len_utf8_string(size_t buffer_size)
+static inline size_t tvr_pickle_length_utf8_string(size_t buffer_size)
 {
     // an UTF-8 string has a nul terminator outside of the tag/length field.
-    return tvr_len_string(buffer_size) + 1;
+    return tvr_pickle_length_string(buffer_size) + 1;
 }
 
-static inline size_t tvr_len_binary_string(size_t buffer_size)
+static inline size_t tvr_pickle_length_binary_string(size_t buffer_size)
 {
-    return tvr_len_string(buffer_size);
+    return tvr_pickle_length_string(buffer_size);
 }
 
-static inline size_t tvr_len_list(size_t size)
+static inline size_t tvr_pickle_length_list(size_t size)
 {
-    return tvr_len_compound(size);
+    return tvr_pickle_length_compound(size);
 }
 
-static inline size_t tvr_len_dictionary(size_t size)
+static inline size_t tvr_pickle_length_dictionary(size_t size)
 {
-    return tvr_len_compound(size);
+    return tvr_pickle_length_compound(size);
 }
 
 #endif

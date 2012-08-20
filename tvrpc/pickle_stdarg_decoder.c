@@ -19,23 +19,23 @@
 #include <tvrpc/pickle_decoder.h>
 #include <tvrpc/pickle_stdarg_decoder.h>
 
-int tvr_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
+int tvr_pickle_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...)
 {
     va_list ap;
     int     ret;
 
     va_start(ap, fmt);
-    ret = tvr_vdecode(buffer, fmt, ap);
+    ret = tvr_pickle_vdecode(buffer, fmt, ap);
     va_end(ap);
 
     return ret;
 }
 
-int tvr_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap)
+int tvr_pickle_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap)
 {
     utf8_t      c;
     utf8_t      *s;
-    tvr_token_t token;
+    tvr_pickle_token_t token;
     int8_t      *pi8;
     uint8_t     *pu8;
     int16_t     *pi16;
@@ -50,92 +50,92 @@ int tvr_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_
 
 
     while ((c = *fmt++) != '\0') {
-        token = tvr_dec_token(buffer);
+        token = tvr_pickle_decode_token(buffer);
         switch (c) {
         case 'b':
             pi8 = va_arg(ap, int8_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pi8 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pi8 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pi8 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pi8 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'B':
             pu8 = va_arg(ap, uint8_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pu8 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pu8 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pu8 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pu8 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'w':
             pi16 = va_arg(ap, int16_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pi16 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pi16 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pi16 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pi16 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'W':
             pu16 = va_arg(ap, uint16_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pu16 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pu16 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pu16 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pu16 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'd':
             pi32 = va_arg(ap, int32_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pi32 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pi32 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pi32 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pi32 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'D':
             pu32 = va_arg(ap, uint32_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pu32 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pu32 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pu32 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pu32 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'q':
             pi64 = va_arg(ap, int64_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pi64 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pi64 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pi64 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pi64 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'Q':
             pu64 = va_arg(ap, uint64_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pu64 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pu64 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pu64 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pu64 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'f':
             pf32 = va_arg(ap, float32_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pf32 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pf32 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pf32 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pf32 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 'F':
             pf64 = va_arg(ap, float64_t *);
             switch (token.type) {
-            case TVP_TOKEN_INTEGER: *pf64 = token.value.i; break;
-            case TVP_TOKEN_FLOAT  : *pf64 = token.value.f; break;
+            case TVR_PICKLE_TOKEN_INTEGER: *pf64 = token.value.i; break;
+            case TVR_PICKLE_TOKEN_FLOAT  : *pf64 = token.value.f; break;
             default: errno = EINVAL; return -1;
             }
             break;
         case 's':
             ps = va_arg(ap, utf8_t **);
             switch (token.type) {
-            case TVP_TOKEN_UTF8_STRING: *ps = token.data; break;
+            case TVR_PICKLE_TOKEN_UTF8_STRING: *ps = token.data; break;
             default: errno = EINVAL; return -1;
             }
             break;
