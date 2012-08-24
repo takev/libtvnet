@@ -1,12 +1,36 @@
+tvnet - Take Vos's network library
+==================================
+
+This library is a base for running TIPC services.
+
+Cluster ID
+----------
+A 64 bit signed integer which is unique inside the cluster. The number is based on the time
+created by the tvu_time(). The lower 12 bits are replaced by the TIPC node id. If two ids
+are retrieved in close succession, the time will be incremented beyond the current time.
+
+tvn_cuid() is implemented as a wait-free algorithm. However tvu_time() uses clock_gettime()
+which is implemented as a lock-free algorithm, however practically it is wait-free since
+only the kernel clock synchronization can cause a retry.
+
+Service
+-------
+The service calls are for opening a TIPC socket for both server and client side. Most calls
+require a 64 bit service_nr. A positive number is translated into a well known port name,
+while negative numbers represent port numbers for direct communication to the process.
+
+On operating systems which do not support TIPC, these functions will fall back to using
+UNIX domain sockets which only work on a single host. The UNIX domain fallback is only
+supposed to be used for development.
 
 
-
-
-Marshalling format
-==================
-
-The Type/Size/Value bytes
--------------------------
+Pickleling format
+------------------
+null, integers, reals, strings, byte arrays, lists and dictionaries can be serialized
+using a simple byte oriented format. It was designed to be a compact binary version of
+JSON. All code points have been used, so that it can not be extended in the future,
+this was by design. Numbers are automatically converted from double->float->integer
+when there is no loss in precision.
 
 0VVVVVVV                   7 bit signed integer value. (-16 values at negative end)
 01000101  2 x VVVVVVVV     Big-Endian  16-bit signed integer value      -59  -x45
@@ -36,6 +60,16 @@ The Type/Size/Value bytes
 11111110 2 x LLLLLLLL      Dictionary with 16 bit nr of key-value pairs
 11111111 4 x LLLLLLLL      Dictionary with 32 bit nr of key-value pairs
 
+Logging
+-------
+The main macros for logging information in your applications are:
+- TVNL_FATAL(fmt, ...)
+- TVNL_ERROR(fmt, ...)
+- TVNL_WARNING(fmt, ...)
+- TVNL_INFO(fmt, ...)
+- TVNL_DEBUG(fmt, ...)
 
+Log messages are stored unformated in shared-memory ring buffer. The log server will dump the
+messages into files after formatting.
 
 
