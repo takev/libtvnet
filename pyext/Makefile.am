@@ -9,5 +9,5 @@ tvnetmodule_la_SOURCES = tvnetmodule.c
 tvnetmodule_la_LDFLAGS = -module $(PYTHON_LDFLAGS) -L../tvnet
 tvnetmodule_la_LIBADD = -ltvnet $(DEPS_LIBS)
 
-dist_bin_SCRIPTS=tvnsend
+dist_bin_SCRIPTS=tvnsend tvid
 

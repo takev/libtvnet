@@ -22,7 +22,7 @@ __thread uint64_t tvnl_cause;
 void tvnl_vmessage(utf8_t const * restrict filename, tvu_int lineno, tvnl_severity_t severity, utf8_t const * restrict fmt, va_list ap)
 {
     tvu_buffer_t        buffer = {.data = NULL, .offset = 0, .size = 0, .fd = TVU_BUFFER_UNKNOWN};
-    tvnl_log_info_t      *log_info = &tvnl_log_info;
+    tvn_info_t          *log_info = &tvn_info;
     tvu_time_t          timestamp = tvu_time();
     utf8_t              types[tvu_count_character(fmt, '%') + 1];
     va_list             ap2;

@@ -23,9 +23,9 @@
 
 #define TVNL_LOG_MSG_HDR\
     tvu_time_t      timestamp;\
-    tvu_cuid_t      user;\
-    tvu_cuid_t      session;\
-    tvu_cuid_t      transaction;\
+    tvn_cuid_t      user;\
+    tvn_cuid_t      session;\
+    tvn_cuid_t      transaction;\
     uint64_t        type;
 
 typedef struct {

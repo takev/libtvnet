@@ -281,7 +281,7 @@ static PyObject *pytvn_init(PyObject *self __attribute__((unused)), PyObject *ar
 {
     utf8_t  *argv0;
 
-    if (!PyArg_ParseTuple(args, "s", &argv0)) {
+    if (!PyArg_ParseTuple(args, "s:init", &argv0)) {
         return NULL;
     }
 
@@ -320,7 +320,7 @@ static PyObject *pytvn_decode(PyObject *self __attribute__((unused)), PyObject *
     char            *data;
     Py_ssize_t      size;
 
-    if (!PyArg_ParseTuple(args, "s#", &data, &size)) {
+    if (!PyArg_ParseTuple(args, "s#:decode", &data, &size)) {
         return NULL;
     }
     buffer.size = size;
@@ -349,7 +349,7 @@ static PyObject *pytvn_socket(PyObject *self __attribute__((unused)), PyObject *
 {
     int fd;
 
-    if (!PyArg_ParseTuple(args, "")) {
+    if (!PyArg_ParseTuple(args, ":socket")) {
         return NULL;
     }
 
@@ -366,7 +366,7 @@ static PyObject *pytvn_bind(PyObject *self __attribute__((unused)), PyObject *ar
     int         fd;
     long long   service;
 
-    if (!PyArg_ParseTuple(args, "iL", &fd, &service)) {
+    if (!PyArg_ParseTuple(args, "iL:bind", &fd, &service)) {
         return NULL;
     }
 
@@ -383,7 +383,7 @@ static PyObject *pytvn_unbind(PyObject *self __attribute__((unused)), PyObject *
     int         fd;
     long long   service;
 
-    if (!PyArg_ParseTuple(args, "iL", &fd, &service)) {
+    if (!PyArg_ParseTuple(args, "iL:unbind", &fd, &service)) {
         return NULL;
     }
 
@@ -400,7 +400,7 @@ static PyObject *pytvn_client_bind(PyObject *self __attribute__((unused)), PyObj
     int         fd;
     long long   service;
 
-    if (!PyArg_ParseTuple(args, "i", &fd)) {
+    if (!PyArg_ParseTuple(args, "i:client_bind", &fd)) {
         return NULL;
     }
 
@@ -463,7 +463,7 @@ static PyObject *pytvn_close(PyObject *self __attribute__((unused)), PyObject *a
     int         fd;
     long long   service;
 
-    if (!PyArg_ParseTuple(args, "iL", &fd, &service)) {
+    if (!PyArg_ParseTuple(args, "iL:close", &fd, &service)) {
         return NULL;
     }
 
@@ -475,6 +475,21 @@ static PyObject *pytvn_close(PyObject *self __attribute__((unused)), PyObject *a
     Py_RETURN_NONE;
 }
 
+static PyObject *pytvn_cuid(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    tvn_cuid_t id;
+
+    if (!PyArg_ParseTuple(args, ":cuid")) {
+        return NULL;
+    }
+
+    if ((id = tvn_cuid()) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    return PyLong_FromLongLong(id);
+}
 
 static PyMethodDef pytvn_methods[] = {
     {"tvu_init", pytvn_init, METH_VARARGS, "Initialize tvutils."},
@@ -485,6 +500,7 @@ static PyMethodDef pytvn_methods[] = {
     {"sendto", pytvn_sendto, METH_VARARGS, "Send a message to a service, or back to the client."},
     {"recvfrom", pytvn_recvfrom, METH_VARARGS, "Receive a message from a client, or back from the service."},
     {"close", pytvn_close, METH_VARARGS, "Close socket."},
+    {"cuid", pytvn_cuid, METH_VARARGS, "Get unique identifier."},
     {"encode", pytvn_encode, METH_VARARGS, "Encode python objects passed as argument."},
     {"decode", pytvn_decode, METH_VARARGS, "Decode bytes into python objects."},
     {NULL, NULL, 0, NULL}

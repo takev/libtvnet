@@ -1,4 +1,4 @@
-/* libtvnet - Take Vos' Network tools.
+/* libtvutils - Library of utilities.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,22 +14,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVN_TVNET_H
-#define TVN_TVNET_H
-
-#include <tvnet/version.h>
-#include <tvnet/common.h>
-#include <tvnet/target.h>
-#include <tvnet/service.h>
-#include <tvnet/fmt_parser.h>
-#include <tvnet/pickle_print.h>
-#include <tvnet/pickle_length.h>
-#include <tvnet/pickle_encoder.h>
-#include <tvnet/pickle_decoder.h>
-#include <tvnet/pickle_stdarg_encoder.h>
-#include <tvnet/pickle_stdarg_decoder.h>
+#include <stdio.h>
+#include <tvutils/tvutils.h>
 #include <tvnet/cuid.h>
-#include <tvnet/log_messages.h>
-#include <tvnet/log.h>
 
-#endif
+int main(int argc __attribute__((unused)), char *argv[])
+{
+    tvn_cuid_t   r;
+    tvn_cuid_t   prev_r;
+    int         i;
+
+    TVU_UNITTEST_INIT
+    tvu_init(argv[0]);
+
+    // Loop 16 times to the buffer.
+    prev_r = tvu_random();
+    for (i = 0; i < 0x10000; i++) {
+        r = tvn_cuid();
+        TVU_UNITTEST_NOT_CMP(r, prev_r)
+        prev_r = r;
+    }
+
+    return 0;
+}

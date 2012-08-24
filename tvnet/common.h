@@ -17,22 +17,34 @@
 #ifndef TVN_COMMON_H
 #define TVN_COMMON_H
 
-#define TVL_SHM_KEY     0xf6d95fe2      //< Shared memory key for the tvlog system.
-#define TVL_SHM_SIZE    0x00100000      //< 1 MB should be more than enough for a few log messages.
+#define TVNL_RINGBUFFER_SIZE    0x00100000      //< 1 MB ring buffer for log messages.
+#define TVN_SHM_KEY             0xf6d95fe2      //< Shared memory key for the tvlog system.
+#define TVN_SHM_SIZE            (TVNL_RINGBUFFER_SIZE + sizeof (tvn_cuid_state_t))
 
-#include <tvutils/tvutils.h>
+typedef int64_t tvn_cuid_t;
 
+//! Shared state between threads and processes.
+struct tvn_cuid_state_s {
+    int16_t     node_id;                                  //< Cluster node number.
+    tvn_cuid_t  prev_cuid __attribute__((aligned(64)));   //< Last cluster node.
+} __attribute__((aligned(64)));
+typedef struct tvn_cuid_state_s tvn_cuid_state_t;
+
+//! State shared between threads and processes.
 typedef struct {
-    tvu_cuid_t  user;           //< The user for whom the transaction is executed.
-    tvu_cuid_t  session;        //< The session this transaction is in.
-    tvu_cuid_t  transaction;    //< The transaction.
+    tvn_cuid_t  user;           //< The user for whom the transaction is executed.
+    tvn_cuid_t  session;        //< The session this transaction is in.
+    tvn_cuid_t  transaction;    //< The transaction.
     utf8_t      *service;       //< Name of service.
     uint64_t    session_flags;  //< The session flags, which contain information on how to handle messages.
-} tvnl_log_info_t;
+} tvn_info_t;
 
+// These are located in shared-memory.
+extern tvn_cuid_state_t *tvn_cuid_state;
 extern tvu_ringbuffer_t *tvnl_ringbuffer;
 
-extern __thread tvnl_log_info_t tvnl_log_info;
+// This information is kept on a thread by thread bases.
+extern __thread tvn_info_t tvn_info;
 
 int tvn_init(void);
 

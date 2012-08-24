@@ -18,11 +18,14 @@ libtvnet_la_SOURCES =\
 	pickle_stdarg_decoder.c\
 	log.c
 
-check_PROGRAMS = pickle_print_test
-TESTS = pickle_print_test
+check_PROGRAMS = pickle_print_test cuid_test
+TESTS = pickle_print_test cuid_test
 
 pickle_print_test_SOURCES = pickle_print_test.c
-pickle_print_test_LDADD = -ltvnet
+pickle_print_test_LDADD = $(top_builddir)/tvnet/libtvnet.la
+
+cuid_test_SOURCES = cuid_test.c
+cuid_test_LDADD = $(top_builddir)/tvnet/libtvnet.la
 
 library_includedir=$(includedir)/tvnet-$(VERSION)/tvnet
 library_include_HEADERS =\
@@ -38,6 +41,7 @@ library_include_HEADERS =\
 	pickle_decoder.h\
 	pickle_stdarg_encoder.h\
 	pickle_stdarg_decoder.h\
+	cuid.h\
 	log_messages.h\
 	log.h
 
