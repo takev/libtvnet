@@ -1,4 +1,4 @@
-/* libtvnet - Take Vos' Network tools.
+/* libtvlog - Take Vos's log library
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,21 +14,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVN_TVNET_H
-#define TVN_TVNET_H
+#ifndef TVN_FMT_PARSER_H
+#define TVN_FMT_PARSER_H
 
-#include <tvnet/version.h>
-#include <tvnet/common.h>
-#include <tvnet/target.h>
-#include <tvnet/service.h>
-#include <tvnet/fmt_parser.h>
-#include <tvnet/pickle_print.h>
-#include <tvnet/pickle_length.h>
-#include <tvnet/pickle_encoder.h>
-#include <tvnet/pickle_decoder.h>
-#include <tvnet/pickle_stdarg_encoder.h>
-#include <tvnet/pickle_stdarg_decoder.h>
-#include <tvnet/log_messages.h>
-#include <tvnet/log.h>
+#include <tvutils/tvutils.h>
+
+/** Convert printf format string to type format string.
+ * You can find out the size of the type format string by passing the
+ *
+ * fmt string to tvu_count_characters() and count '%' characters.
+ * @param types     Pre allocated type format string. Simply count '%' signs in the fmt string.
+ * @param fmt       printf format string.
+ */
+tvu_int tvnp_fmt_parse(utf8_t * restrict types, utf8_t const * restrict fmt);
 
 #endif

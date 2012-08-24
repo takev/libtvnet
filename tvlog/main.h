@@ -14,26 +14,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVN_COMMON_H
-#define TVN_COMMON_H
-
-#define TVL_SHM_KEY     0xf6d95fe2      //< Shared memory key for the tvlog system.
-#define TVL_SHM_SIZE    0x00100000      //< 1 MB should be more than enough for a few log messages.
+#ifndef TVLOGD_MAIN_H
+#define TVLOGD_MAIN_H
 
 #include <tvutils/tvutils.h>
 
-typedef struct {
-    tvu_cuid_t  user;           //< The user for whom the transaction is executed.
-    tvu_cuid_t  session;        //< The session this transaction is in.
-    tvu_cuid_t  transaction;    //< The transaction.
-    utf8_t      *service;       //< Name of service.
-    uint64_t    session_flags;  //< The session flags, which contain information on how to handle messages.
-} tvnl_log_info_t;
-
-extern tvu_ringbuffer_t *tvnl_ringbuffer;
-
-extern __thread tvnl_log_info_t tvnl_log_info;
-
-int tvn_init(void);
+extern utf8_t   *option_progname;
+extern utf8_t   *option_progpath;
+extern utf8_t   *option_progdir;
+extern utf8_t   option_message[];
+extern bool     option_usage;
+extern bool     option_verbose;
+extern bool     option_foreground;
 
 #endif

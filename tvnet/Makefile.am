@@ -12,8 +12,17 @@ libtvnet_la_LIBADD = $(DEPS_LIBS) -lm
 libtvnet_la_SOURCES =\
 	version.c\
 	common.c\
+	fmt_parser.c\
+	pickle_print.c\
 	pickle_stdarg_encoder.c\
-	pickle_stdarg_decoder.c
+	pickle_stdarg_decoder.c\
+	log.c
+
+check_PROGRAMS = pickle_print_test
+TESTS = pickle_print_test
+
+pickle_print_test_SOURCES = pickle_print_test.c
+pickle_print_test_LDADD = -ltvnet
 
 library_includedir=$(includedir)/tvnet-$(VERSION)/tvnet
 library_include_HEADERS =\
@@ -22,11 +31,15 @@ library_include_HEADERS =\
 	common.h\
 	target.h\
 	service.h\
+	fmt_parser.h\
+	pickle_print.h\
 	pickle_length.h\
 	pickle_encoder.h\
 	pickle_decoder.h\
 	pickle_stdarg_encoder.h\
-	pickle_stdarg_decoder.h
+	pickle_stdarg_decoder.h\
+	log_messages.h\
+	log.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = tvnet.pc

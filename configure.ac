@@ -51,6 +51,6 @@ AC_CHECK_HEADER(
 )
 
 AC_CONFIG_HEADERS([tvnet/config.h])
-AC_CONFIG_FILES([Makefile tvnet/Makefile tvnet/tvnet.pc tvnet/version.h tvnet/target.h  pyext/Makefile])
+AC_CONFIG_FILES([Makefile tvnet/Makefile tvnet/tvnet.pc tvnet/version.h tvnet/target.h  pyext/Makefile tvlogd/Makefile tvlog/Makefile])
 AC_OUTPUT
 

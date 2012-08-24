@@ -14,26 +14,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVN_COMMON_H
-#define TVN_COMMON_H
-
-#define TVL_SHM_KEY     0xf6d95fe2      //< Shared memory key for the tvlog system.
-#define TVL_SHM_SIZE    0x00100000      //< 1 MB should be more than enough for a few log messages.
+#ifndef TVN_LOG_MESSAGES_H
+#define TVN_LOG_MESSAGES_H
 
 #include <tvutils/tvutils.h>
 
+#define TVNL_LOG_TYPE_PRINT  1
+
+#define TVNL_LOG_MSG_HDR\
+    tvu_time_t      timestamp;\
+    tvu_cuid_t      user;\
+    tvu_cuid_t      session;\
+    tvu_cuid_t      transaction;\
+    uint64_t        type;
+
 typedef struct {
-    tvu_cuid_t  user;           //< The user for whom the transaction is executed.
-    tvu_cuid_t  session;        //< The session this transaction is in.
-    tvu_cuid_t  transaction;    //< The transaction.
-    utf8_t      *service;       //< Name of service.
-    uint64_t    session_flags;  //< The session flags, which contain information on how to handle messages.
-} tvnl_log_info_t;
-
-extern tvu_ringbuffer_t *tvnl_ringbuffer;
-
-extern __thread tvnl_log_info_t tvnl_log_info;
-
-int tvn_init(void);
+    TVNL_LOG_MSG_HDR
+    uint8_t     msg;            //< Pickled printf message.
+} tvnl_log_msg_print_t;
 
 #endif

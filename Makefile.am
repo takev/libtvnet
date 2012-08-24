@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = tvnet pyext
+SUBDIRS = tvnet pyext tvlogd tvlog
 
 include am/doxygen.am
 
