@@ -1,0 +1,8 @@
+#ifndef TVN_TARGET_H
+#define TVN_TARGET_H
+
+#if @TVN_HAVE_TIPC@
+#define TVN_HAVE_TIPC
+#endif
+
+#endif

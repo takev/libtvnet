@@ -19,6 +19,8 @@
 
 #include <tvnet/version.h>
 #include <tvnet/common.h>
+#include <tvnet/target.h>
+#include <tvnet/service.h>
 #include <tvnet/pickle_length.h>
 #include <tvnet/pickle_encoder.h>
 #include <tvnet/pickle_decoder.h>

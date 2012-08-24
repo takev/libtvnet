@@ -44,7 +44,13 @@ AM_PATH_PYTHON
 
 PKG_CHECK_MODULES([DEPS], [tvutils >= 0.4])
 
+AC_CHECK_HEADER(
+    [linux/tipc.h],
+    AC_SUBST([TVN_HAVE_TIPC], [1]),
+    AC_SUBST([TVN_HAVE_TIPC], [0])
+)
+
 AC_CONFIG_HEADERS([tvnet/config.h])
-AC_CONFIG_FILES([Makefile tvnet/Makefile tvnet/tvnet.pc tvnet/version.h pyext/Makefile])
+AC_CONFIG_FILES([Makefile tvnet/Makefile tvnet/tvnet.pc tvnet/version.h tvnet/target.h  pyext/Makefile])
 AC_OUTPUT
 

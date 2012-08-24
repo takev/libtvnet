@@ -183,8 +183,7 @@ static PyObject *pytvn_decode_recurse(tvu_buffer_t *buffer)
         PyErr_SetString(pytvn_error, "Running over bound during decoding.");
         return NULL;
     case TVNP_TOKEN_NULL:
-        Py_INCREF(Py_None);
-        return Py_None;
+        Py_RETURN_NONE;
     case TVNP_TOKEN_INTEGER:
         return PyInt_FromLong(token.value.i);
     case TVNP_TOKEN_FLOAT:
@@ -346,8 +345,146 @@ static PyObject *pytvn_decode(PyObject *self __attribute__((unused)), PyObject *
     }
 }
 
+static PyObject *pytvn_socket(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int fd;
+
+    if (!PyArg_ParseTuple(args, "")) {
+        return NULL;
+    }
+
+    if ((fd = tvns_socket()) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    return PyInt_FromLong(fd);
+}
+
+static PyObject *pytvn_bind(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int         fd;
+    long long   service;
+
+    if (!PyArg_ParseTuple(args, "iL", &fd, &service)) {
+        return NULL;
+    }
+
+    if (tvns_bind(fd, service) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject *pytvn_unbind(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int         fd;
+    long long   service;
+
+    if (!PyArg_ParseTuple(args, "iL", &fd, &service)) {
+        return NULL;
+    }
+
+    if (tvns_unbind(fd, service) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject *pytvn_client_bind(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int         fd;
+    long long   service;
+
+    if (!PyArg_ParseTuple(args, "i", &fd)) {
+        return NULL;
+    }
+
+    if (tvns_client_bind(fd, &service) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    return PyLong_FromLongLong(service);
+}
+
+static PyObject *pytvn_sendto(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int         fd;
+    long long   service;
+    void        *buffer;
+    Py_ssize_t  buffer_size;
+    int         flags = 0;
+    tvu_int     r;
+
+    if (!PyArg_ParseTuple(args, "iLs#|i:sendto", &fd, &service, &buffer, &buffer_size, &flags)) {
+        return NULL;
+    }
+
+    if ((r = tvns_sendto(fd, service, buffer, buffer_size, flags)) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    return PyLong_FromLongLong(r);
+}
+
+static PyObject *pytvn_recvfrom(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int         fd;
+    tvu_int     service;
+    char        buffer[65536];
+    size_t      buffer_size = 65536;
+    int         flags = 0;
+    tvu_int     r;
+    PyObject    *t;
+
+    if (!PyArg_ParseTuple(args, "i|i:recvfrom", &fd, &flags)) {
+        return NULL;
+    }
+
+    if ((r = tvns_recvfrom(fd, &service, buffer, buffer_size, flags)) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    t = PyTuple_New(2);
+    PyTuple_SET_ITEM(t, 0, PyString_FromStringAndSize(buffer, r));
+    PyTuple_SET_ITEM(t, 1, PyLong_FromLongLong(service));
+    return t;
+}
+
+static PyObject *pytvn_close(PyObject *self __attribute__((unused)), PyObject *args)
+{
+    int         fd;
+    long long   service;
+
+    if (!PyArg_ParseTuple(args, "iL", &fd, &service)) {
+        return NULL;
+    }
+
+    if (tvns_close(fd, service) == -1) {
+        PyErr_SetFromErrno(PyExc_IOError);
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
+}
+
+
 static PyMethodDef pytvn_methods[] = {
     {"tvu_init", pytvn_init, METH_VARARGS, "Initialize tvutils."},
+    {"socket", pytvn_socket, METH_VARARGS, "Create a socket for a service."},
+    {"bind", pytvn_bind, METH_VARARGS, "Bind a socket for a service."},
+    {"unbind", pytvn_unbind, METH_VARARGS, "Unbind a socket for a service."},
+    {"client_bind", pytvn_client_bind, METH_VARARGS, "Unbind a socket for a service."},
+    {"sendto", pytvn_sendto, METH_VARARGS, "Send a message to a service, or back to the client."},
+    {"recvfrom", pytvn_recvfrom, METH_VARARGS, "Receive a message from a client, or back from the service."},
+    {"close", pytvn_close, METH_VARARGS, "Close socket."},
     {"encode", pytvn_encode, METH_VARARGS, "Encode python objects passed as argument."},
     {"decode", pytvn_decode, METH_VARARGS, "Decode bytes into python objects."},
     {NULL, NULL, 0, NULL}

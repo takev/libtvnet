@@ -20,6 +20,8 @@ library_include_HEADERS =\
 	tvnet.h\
 	version.h\
 	common.h\
+	target.h\
+	service.h\
 	pickle_length.h\
 	pickle_encoder.h\
 	pickle_decoder.h\
