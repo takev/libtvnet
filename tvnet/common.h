@@ -1,4 +1,4 @@
-/* libtvpickle - Take Vos' Pickle; object serializer and deserializer.
+/* libtvnet - Take Vos' Network tools.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,11 +14,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVR_VERSION_H
-#define TVR_VERSION_H
+#ifndef TVN_COMMON_H
+#define TVN_COMMON_H
 
-#define TVR_VERSION "@VERSION@"
 
-extern char *tvr_version;
+int tvn_init(void);
 
 #endif

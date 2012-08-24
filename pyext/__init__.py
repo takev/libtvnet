@@ -1,9 +1,9 @@
 
-import tvrpc as c_tvrpc
+import tvnet as c_tvnet
 import sys
 
-c_tvrpc.tvu_init(sys.argv[0])
+c_tvnet.tvu_init(sys.argv[0])
 
-encode = c_tvrpc.encode
-decode = c_tvrpc.decode
+encode = c_tvnet.encode
+decode = c_tvnet.decode
 

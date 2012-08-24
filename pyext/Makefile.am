@@ -4,10 +4,10 @@ AM_CFLAGS = -Wall -W -Werror -pedantic -Wno-sign-compare -Wno-long-long -Wno-unu
 DEFAULT_INCLUDES=-I$(top_srcdir)
 
 pkgpython_PYTHON = __init__.py
-pkgpython_LTLIBRARIES = tvrpcmodule.la
-tvrpcmodule_la_SOURCES = tvrpcmodule.c
-tvrpcmodule_la_LDFLAGS = -module $(PYTHON_LDFLAGS) -L../tvrpc
-tvrpcmodule_la_LIBADD = -ltvrpc $(DEPS_LIBS)
+pkgpython_LTLIBRARIES = tvnetmodule.la
+tvnetmodule_la_SOURCES = tvnetmodule.c
+tvnetmodule_la_LDFLAGS = -module $(PYTHON_LDFLAGS) -L../tvnet
+tvnetmodule_la_LIBADD = -ltvnet $(DEPS_LIBS)
 
-bin_SCRIPTS=tvpsend
+dist_bin_SCRIPTS=tvnsend
 

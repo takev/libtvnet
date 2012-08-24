@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Take Vos's Network tools
+Description: Network tools.
+Requires: tvutils >= 0.4
+Version: @VERSION@
+Libs: -L${libdir} -ltvnet -lm
+Cflags: -I${includedir}/tvnet-@VERSION@
+

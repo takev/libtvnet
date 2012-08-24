@@ -1,4 +1,4 @@
-/* libtvrpc - Take Vos' Pickle; object serializer and deserializer.
+/* libtvnet - Take Vos' Network tools.
  * Copyright (C) 2012  Take Vos <take.vos@vosgames.nl>
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -14,23 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef TVR_PICKLE_STDARG_DECODER_H
-#define TVR_PICKLE_STDARG_DECODER_H
+#include <tvnet/version.h>
 
-#include <stdarg.h>
-#include <tvutils/tvutils.h>
+char *tvn_version = TVN_VERSION;
 
-/** Decode a buffer, and put the results in the fields.
- * @param fmt   Format string of the arguments.
- * @param ...   Pointers to fields to decode.
- */
-int tvr_pickle_decode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, ...);
-
-/**
- * @param fmt   Format string of the arguments.
- * @param ap    The fields to encode.
- */
-int tvr_pickle_vdecode(tvu_buffer_t * restrict buffer, utf8_t const * restrict fmt, va_list ap);
-
-
-#endif

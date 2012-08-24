@@ -1,6 +1,6 @@
 
 AC_PREREQ(2.61)
-AC_INIT(tvrpc, 0.4, take.vos@vosgames.nl)
+AC_INIT(tvnet, 0.4, take.vos@vosgames.nl)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([buildutils])
 AM_INIT_AUTOMAKE()
@@ -33,7 +33,7 @@ DX_RTF_FEATURE(OFF)
 DX_XML_FEATURE(OFF)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
-DX_INIT_DOXYGEN(tvrpc, doxygen.cfg)
+DX_INIT_DOXYGEN(tvnet, doxygen.cfg)
 
 
 AX_PKG_SWIG(1.3.17, [], [ AC_MSG_ERROR([SWIG is required to build..]) ])
@@ -44,7 +44,7 @@ AM_PATH_PYTHON
 
 PKG_CHECK_MODULES([DEPS], [tvutils >= 0.4])
 
-AC_CONFIG_HEADERS([tvrpc/config.h])
-AC_CONFIG_FILES([Makefile tvrpc/Makefile tvrpc/tvrpc.pc tvrpc/version.h pyext/Makefile])
+AC_CONFIG_HEADERS([tvnet/config.h])
+AC_CONFIG_FILES([Makefile tvnet/Makefile tvnet/tvnet.pc tvnet/version.h pyext/Makefile])
 AC_OUTPUT
 
